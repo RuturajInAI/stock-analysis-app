@@ -19,13 +19,16 @@ custom_stock = st.text_input("Or type a custom stock symbol:")
 symbol = custom_stock if custom_stock else selected_stock
 st.write(f"Analyzing stock: {symbol}")
 
-# Function to fetch stock data for the last 10 days
+# Function to fetch stock data for the last month and display the last 10 days
 def fetch_last_10_days_data(symbol):
     stock = yf.Ticker(symbol)
-    data = stock.history(period="10d", interval="1d")
+    data = stock.history(period="1mo", interval="1d")
+    # Take only the last 10 rows if there is more than 10 days of data
+    if len(data) > 10:
+        data = data.tail(10)
     return data
 
-# Fetch the last 10 days of data and display it
+# Fetch the last month of data and display the last 10 days
 stock_data = fetch_last_10_days_data(symbol)
 if stock_data.empty:
     st.write("Data unavailable for this stock.")
