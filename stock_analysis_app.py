@@ -8,16 +8,31 @@ import plotly.graph_objs as go
 st.title("Enhanced Stock Analysis and Prediction App")
 st.write("Select a stock from the dropdown or type a stock symbol to analyze.")
 
-# List of common German stock symbols
-stock_symbols = ["SAP.DE", "DBK.DE", "VOW3.DE", "BMW.DE", "DTE.DE"]
+# List of stock symbols with their names
+stock_symbols = {
+    "SAP.DE": "SAP SE",
+    "DBK.DE": "Deutsche Bank AG",
+    "VOW3.DE": "Volkswagen AG",
+    "BMW.DE": "BMW AG",
+    "DTE.DE": "Deutsche Telekom AG",
+    "ALV.DE": "Allianz SE",
+    "BAS.DE": "BASF SE",
+    "BAYN.DE": "Bayer AG",
+    "BEI.DE": "Beiersdorf AG",
+    "CON.DE": "Continental AG",
+    # Add more as needed
+}
 
 # Dropdown and text input for selecting a stock
-selected_stock = st.selectbox("Select Stock:", stock_symbols)
+selected_stock = st.selectbox("Select Stock:", list(stock_symbols.keys()))
 custom_stock = st.text_input("Or type a custom stock symbol:")
 
-# Decide which stock to use based on user input
+# Determine which stock symbol to use based on user input
 symbol = custom_stock if custom_stock else selected_stock
-st.write(f"Analyzing stock: {symbol}")
+company_name = stock_symbols.get(symbol, "Unknown Company")
+
+# Display the selected stock's name and ticker symbol
+st.write(f"Analyzing stock: {company_name} ({symbol})")
 
 # Function to fetch stock data for the last 6 months
 def fetch_last_6_months_data(symbol):
@@ -67,14 +82,14 @@ else:
     st.write(f"Prediction: **{prediction}**")
 
     # Function to plot the stock data with moving averages
-    def plot_stock_data(data, symbol):
+    def plot_stock_data(data, symbol, company_name):
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=data.index, y=data['Close'], mode='lines', name='Close Price'))
         fig.add_trace(go.Scatter(x=data.index, y=data['MA50'], mode='lines', name='50-Day MA'))
         fig.add_trace(go.Scatter(x=data.index, y=data['MA200'], mode='lines', name='200-Day MA'))
-        fig.update_layout(title=f"{symbol} Stock Price with 50-Day and 200-Day Moving Averages",
+        fig.update_layout(title=f"{company_name} ({symbol}) - Stock Price with 50-Day and 200-Day Moving Averages",
                           xaxis_title="Date", yaxis_title="Price")
         st.plotly_chart(fig)
 
     # Plot the stock data with moving averages
-    plot_stock_data(stock_data, symbol)
+    plot_stock_data(stock_data, symbol, company_name)
