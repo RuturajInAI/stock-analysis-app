@@ -6,9 +6,9 @@ import plotly.graph_objs as go
 
 # Title of the app
 st.title("Enhanced Stock Analysis and Prediction App")
-st.write("Select a stock from the dropdown or type a stock symbol to analyze.")
+st.write("Select a stock from the dropdown or search by ticker to analyze.")
 
-# List of stock symbols with their names
+# List of stock symbols with their names for predefined options
 stock_symbols = {
     "SAP.DE": "SAP SE",
     "DBK.DE": "Deutsche Bank AG",
@@ -20,16 +20,28 @@ stock_symbols = {
     "BAYN.DE": "Bayer AG",
     "BEI.DE": "Beiersdorf AG",
     "CON.DE": "Continental AG",
-    # Add more as needed
+    # Add more predefined German stocks if needed
 }
 
-# Dropdown and text input for selecting a stock
+# Dropdown for selecting predefined stocks and text input for searching by ticker
 selected_stock = st.selectbox("Select Stock:", list(stock_symbols.keys()))
-custom_stock = st.text_input("Or type a custom stock symbol:")
+custom_stock = st.text_input("Search stock with Ticker:")
 
-# Determine which stock symbol to use based on user input
+# Determine the stock symbol to use based on user input
 symbol = custom_stock if custom_stock else selected_stock
-company_name = stock_symbols.get(symbol, "Unknown Company")
+
+# Function to get the company name dynamically from yfinance
+def get_company_name(symbol):
+    try:
+        stock = yf.Ticker(symbol)
+        company_name = stock.info.get("shortName", "Unknown Company")  # Attempt to fetch company name
+        return company_name
+    except Exception as e:
+        st.write(f"Error fetching company name: {e}")
+        return "Unknown Company"
+
+# Get the company name from yfinance if a custom ticker is entered, else use the predefined name
+company_name = get_company_name(symbol) if custom_stock else stock_symbols.get(symbol, "Unknown Company")
 
 # Display the selected stock's name and ticker symbol
 st.write(f"Analyzing stock: {company_name} ({symbol})")
