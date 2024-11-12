@@ -20,45 +20,7 @@ stock_symbols = {
     "BAYN.DE": "Bayer AG",
     "BEI.DE": "Beiersdorf AG",
     "CON.DE": "Continental AG",
-    "1COV.DE": "Covestro AG",
-    "MBG.DE": "Mercedes-Benz Group AG",
-    "DHER.DE": "Delivery Hero SE",
-    "DPW.DE": "Deutsche Post AG",
-    "EOAN.DE": "E.ON SE",
-    "FME.DE": "Fresenius Medical Care AG",
-    "FRE.DE": "Fresenius SE & Co. KGaA",
-    "HEI.DE": "HeidelbergCement AG",
-    "HEN3.DE": "Henkel AG & Co. KGaA",
-    "IFX.DE": "Infineon Technologies AG",
-    "LIN.DE": "Linde PLC",
-    "MRK.DE": "Merck KGaA",
-    "MTX.DE": "MTU Aero Engines AG",
-    "MUV2.DE": "Munich Re AG",
-    "P911.DE": "Porsche AG",
-    "QIA.DE": "Qiagen N.V.",
-    "RWE.DE": "RWE AG",
-    "SHL.DE": "Siemens Healthineers AG",
-    "SY1.DE": "Symrise AG",
-    "VNA.DE": "Vonovia SE",
-    "ZAL.DE": "Zalando SE",
-    "AIR.DE": "Airbus SE",
-    "AFX.DE": "Carl Zeiss Meditec AG",
-    "FPE3.DE": "Fuchs Petrolub SE",
-    "KBX.DE": "Knorr-Bremse AG",
-    "LEG.DE": "LEG Immobilien AG",
-    "PSM.DE": "ProSiebenSat.1 Media SE",
-    "RRTL.DE": "RTL Group",
-    "SZU.DE": "Südzucker AG",
-    "ENR.DE": "Siemens Energy AG",
-    "SIE.DE": "Siemens AG",
-    "SRT3.DE": "Sartorius AG",
-    "DB1.DE": "Deutsche Börse AG",
-    "BOSS.DE": "Hugo Boss AG",
-    "TKA.DE": "Thyssenkrupp AG",
-    "PUM.DE": "Puma SE",
-    "S92.DE": "SMA Solar Technology AG",
-    "HNR1.DE": "Hannover Rück SE",
-    # Additional stocks if needed
+    # Add more predefined German stocks if needed
 }
 
 # Combine the list of stocks with an empty entry for custom tickers
@@ -120,15 +82,15 @@ if symbol:
 
             # Recommendation based on trend and RSI
             if latest_ma50 > latest_ma200 and latest_rsi < 70:
-                return "Buy", "green"
+                return "Uptrend likely to continue - Recommendation: Buy", "green"
             elif latest_ma50 < latest_ma200 and latest_rsi > 30:
-                return "Not Buy", "red"
+                return "Downtrend likely to continue - Recommendation: Not Buy", "red"
             else:
-                return "Hold", "gray"
+                return "Trend is unclear - Recommendation: Hold", "gray"
 
         # Show the prediction with color-coded text
         prediction, color = analyze_and_predict(stock_data)
-        st.markdown(f"**Prediction:** <span style='color:{color}'>{prediction}</span>", unsafe_allow_html=True)
+        st.markdown(f"<span style='color:{color}; font-weight:bold;'>Prediction: {prediction}</span>", unsafe_allow_html=True)
 
         # Function to plot the stock data with moving averages
         def plot_stock_data(data, symbol, company_name):
