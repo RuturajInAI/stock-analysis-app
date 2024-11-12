@@ -2,10 +2,6 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objs as go
 
-# Personal introduction
-st.write("**Ruturaj Dilip Gawdae**")
-st.write("I am completing my master's in Digital Engineering at OVGU Magdeburg, specializing in Data Science. This app is part of my journey to explore and analyze real-world stock data using data science and visualization tools.")
-
 # Title of the app
 st.title("Enhanced Stock Analysis and Prediction App")
 st.write("Select a stock from the dropdown or enter any custom ticker to analyze.")
@@ -158,3 +154,15 @@ if symbol:
         st.write("An error occurred while fetching data for this stock. Please ensure the ticker is correct and try again.")
 else:
     st.write("Please select or enter a stock ticker to analyze.")
+
+# Footer with personal information and motivation
+st.markdown(
+    """
+    <hr style="border:0.5px solid gray;margin-top:50px;margin-bottom:10px">
+    <div style="text-align:center; font-size:0.8em;">
+        <strong>Created by:</strong> Ruturaj Dilip Gawdae<br>
+        <strong>Motivation:</strong> I am completing my master's in Digital Engineering at OVGU Magdeburg, specializing in Data Science. This app is part of my journey to explore and analyze real-world stock data using data science and visualization tools.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
