@@ -49,10 +49,8 @@ selected_stock = st.selectbox(
 custom_stock = st.text_input("Search stock with Ticker:", value=st.session_state.custom_stock, on_change=on_custom_stock_input)
 
 # Update session state values
-if selected_stock:
-    st.session_state.selected_stock = selected_stock
-if custom_stock:
-    st.session_state.custom_stock = custom_stock
+st.session_state.selected_stock = selected_stock
+st.session_state.custom_stock = custom_stock
 
 # Determine the stock symbol to use based on user input
 symbol = st.session_state.custom_stock if st.session_state.custom_stock else st.session_state.selected_stock
