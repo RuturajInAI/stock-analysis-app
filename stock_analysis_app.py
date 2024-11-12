@@ -23,9 +23,32 @@ stock_symbols = {
     # Add more predefined German stocks if needed
 }
 
-# Dropdown for selecting predefined stocks and text input for searching by ticker
-selected_stock = st.selectbox("Select Stock:", list(stock_symbols.keys()))
-custom_stock = st.text_input("Search stock with Ticker:")
+# Initialize session state for managing input fields
+if "selected_stock" not in st.session_state:
+    st.session_state.selected_stock = list(stock_symbols.keys())[0]  # Default to first stock
+if "custom_stock" not in st.session_state:
+    st.session_state.custom_stock = ""
+
+# Dropdown for selecting predefined stocks
+def on_select_stock():
+    st.session_state.custom_stock = ""  # Clear custom stock ticker
+
+selected_stock = st.selectbox(
+    "Select Stock:",
+    list(stock_symbols.keys()),
+    index=list(stock_symbols.keys()).index(st.session_state.selected_stock),
+    on_change=on_select_stock,
+)
+
+# Text input for searching by ticker
+def on_custom_stock_input():
+    st.session_state.selected_stock = list(stock_symbols.keys())[0]  # Reset dropdown to first stock
+
+custom_stock = st.text_input("Search stock with Ticker:", value=st.session_state.custom_stock, on_change=on_custom_stock_input)
+
+# Update session state values
+st.session_state.selected_stock = selected_stock
+st.session_state.custom_stock = custom_stock
 
 # Determine the stock symbol to use based on user input
 symbol = custom_stock if custom_stock else selected_stock
