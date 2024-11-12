@@ -1,14 +1,12 @@
 import streamlit as st
 import yfinance as yf
-import pandas as pd
-import numpy as np
 import plotly.graph_objs as go
 
 # Title of the app
 st.title("Enhanced Stock Analysis and Prediction App")
-st.write("Select a stock from the dropdown or enter a custom ticker to analyze.")
+st.write("Select a stock from the dropdown or enter any custom ticker to analyze.")
 
-# Expanded list of German stock symbols with their names for predefined options
+# List of some German stock symbols for predefined options
 stock_symbols = {
     "SAP.DE": "SAP SE",
     "DBK.DE": "Deutsche Bank AG",
@@ -21,46 +19,33 @@ stock_symbols = {
     "BEI.DE": "Beiersdorf AG",
     "CON.DE": "Continental AG",
     "AIR.DE": "Airbus SE",
+    "SRT3.DE": "Sartorius AG",
     # Add more predefined German stocks if needed
 }
 
-# Combine the list of stocks with an empty entry for custom tickers
-stock_options = [""] + [f"{ticker} - {name}" for ticker, name in stock_symbols.items()]
+# Combine the list of stocks with an option to type a custom ticker
+stock_options = list(stock_symbols.keys())
 
-# Initialize session state for managing input field
-if "stock_input" not in st.session_state:
-    st.session_state.stock_input = ""
+# Dropdown for selecting a stock from the predefined options
+selected_stock = st.selectbox("Select a stock:", stock_options, index=0)
 
-# Callback to handle selection and manual entry
-def on_stock_select():
-    st.session_state.stock_input = st.session_state.stock_dropdown.split(" - ")[0]  # Set stock_input to ticker only
+# Text input for entering any custom stock ticker
+custom_stock = st.text_input("Or type any custom ticker:")
 
-# Dropdown/search field for selecting or entering a stock ticker
-st.write("Select a stock or enter a custom ticker:")
-stock_dropdown = st.selectbox(" ", stock_options, index=0, on_change=on_stock_select, key="stock_dropdown")
+# Determine the stock ticker symbol to use
+symbol = custom_stock if custom_stock else selected_stock
 
-# Determine the stock symbol to use
-symbol = st.session_state.stock_input if st.session_state.stock_input else stock_dropdown.split(" - ")[0]
-
-# Attempt to retrieve the company name
-try:
-    company_name = yf.Ticker(symbol).info.get("shortName", "Unknown Company")
-except Exception as e:
-    company_name = "Unknown Company"
-
-# Display the selected stock's name and ticker symbol
 if symbol:
-    st.write(f"**Analyzing stock:** {company_name} ({symbol})")
-
-    # Function to fetch stock data for the last 6 months
-    def fetch_last_6_months_data(symbol):
-        stock = yf.Ticker(symbol)
-        data = stock.history(period="6mo", interval="1d")
-        return data
-
-    # Fetch the last 6 months of data
     try:
-        stock_data = fetch_last_6_months_data(symbol)
+        # Fetch stock information
+        stock = yf.Ticker(symbol)
+        company_name = stock.info.get("shortName", "Unknown Company")
+        
+        # Display the company name and ticker symbol
+        st.write(f"**Analyzing stock:** {company_name} ({symbol})")
+
+        # Fetch stock data for the last 6 months
+        stock_data = stock.history(period="6mo", interval="1d")
         if stock_data.empty:
             st.write("No data available for this stock.")
         else:
@@ -113,3 +98,5 @@ if symbol:
             st.dataframe(stock_data)
     except Exception as e:
         st.write("An error occurred while fetching data for this stock. Please ensure the ticker is correct and try again.")
+else:
+    st.write("Please select or enter a stock ticker to analyze.")
