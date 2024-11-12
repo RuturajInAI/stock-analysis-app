@@ -2,6 +2,10 @@ import streamlit as st
 import yfinance as yf
 import plotly.graph_objs as go
 
+# Personal introduction
+st.write("**Ruturaj Dilip Gawdae**")
+st.write("I am completing my master's in Digital Engineering at OVGU Magdeburg, specializing in Data Science. This app is part of my journey to explore and analyze real-world stock data using data science and visualization tools.")
+
 # Title of the app
 st.title("Enhanced Stock Analysis and Prediction App")
 st.write("Select a stock from the dropdown or enter any custom ticker to analyze.")
