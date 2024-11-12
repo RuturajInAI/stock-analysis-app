@@ -6,9 +6,9 @@ import plotly.graph_objs as go
 
 # Title of the app
 st.title("Enhanced Stock Analysis and Prediction App")
-st.write("Select a stock from the dropdown or search by ticker to analyze.")
+st.write("Select a stock from the dropdown or enter a custom ticker to analyze.")
 
-# List of stock symbols with their names for predefined options
+# Expanded list of German stock symbols with their names for predefined options
 stock_symbols = {
     "SAP.DE": "SAP SE",
     "DBK.DE": "Deutsche Bank AG",
@@ -20,41 +20,75 @@ stock_symbols = {
     "BAYN.DE": "Bayer AG",
     "BEI.DE": "Beiersdorf AG",
     "CON.DE": "Continental AG",
-    # Add more predefined German stocks if needed
+    "1COV.DE": "Covestro AG",
+    "MBG.DE": "Mercedes-Benz Group AG",
+    "DHER.DE": "Delivery Hero SE",
+    "DPW.DE": "Deutsche Post AG",
+    "EOAN.DE": "E.ON SE",
+    "FME.DE": "Fresenius Medical Care AG",
+    "FRE.DE": "Fresenius SE & Co. KGaA",
+    "HEI.DE": "HeidelbergCement AG",
+    "HEN3.DE": "Henkel AG & Co. KGaA",
+    "IFX.DE": "Infineon Technologies AG",
+    "LIN.DE": "Linde PLC",
+    "MRK.DE": "Merck KGaA",
+    "MTX.DE": "MTU Aero Engines AG",
+    "MUV2.DE": "Munich Re AG",
+    "P911.DE": "Porsche AG",
+    "QIA.DE": "Qiagen N.V.",
+    "RWE.DE": "RWE AG",
+    "SHL.DE": "Siemens Healthineers AG",
+    "SY1.DE": "Symrise AG",
+    "VNA.DE": "Vonovia SE",
+    "ZAL.DE": "Zalando SE",
+    "AIR.DE": "Airbus SE",
+    "AFX.DE": "Carl Zeiss Meditec AG",
+    "FPE3.DE": "Fuchs Petrolub SE",
+    "KBX.DE": "Knorr-Bremse AG",
+    "LEG.DE": "LEG Immobilien AG",
+    "PSM.DE": "ProSiebenSat.1 Media SE",
+    "RRTL.DE": "RTL Group",
+    "SZU.DE": "Südzucker AG",
+    "ENR.DE": "Siemens Energy AG",
+    "SIE.DE": "Siemens AG",
+    "SRT3.DE": "Sartorius AG",
+    "DB1.DE": "Deutsche Börse AG",
+    "BOSS.DE": "Hugo Boss AG",
+    "TKA.DE": "Thyssenkrupp AG",
+    "PUM.DE": "Puma SE",
+    "S92.DE": "SMA Solar Technology AG",
+    "WDI.DE": "Wirecard AG",
+    "HNR1.DE": "Hannover Rück SE",
+    "MEO.DE": "MEAG Munich Ergo Kapitalanlagegesellschaft mbH",
+    "SAX.DE": "Sachsenmilch AG",
+    "KD8.DE": "Kion Group AG",
+    "BNR.DE": "Bertrandt AG",
+    "G24.DE": "Scout24 AG",
+    # Add more as needed
 }
 
-# Initialize session state for managing input fields
-if "selected_stock" not in st.session_state:
-    st.session_state.selected_stock = ""
-if "custom_stock" not in st.session_state:
-    st.session_state.custom_stock = ""
+# Combine the list of stocks with an empty entry for custom tickers
+stock_options = [""] + [f"{ticker} - {name}" for ticker, name in stock_symbols.items()]
 
-# Callback to clear custom_stock if a stock is selected from the dropdown
-def on_select_stock():
-    st.session_state.custom_stock = ""  # Clear custom stock ticker when dropdown is selected
+# Initialize session state for managing input field
+if "stock_input" not in st.session_state:
+    st.session_state.stock_input = ""
 
-# Callback to clear selected_stock if a custom ticker is typed in
-def on_custom_stock_input():
-    st.session_state.selected_stock = ""  # Clear dropdown selection when typing a custom ticker
+# Callback to handle selection and manual entry
+def on_stock_select():
+    st.session_state.stock_input = st.session_state.stock_dropdown.split(" - ")[0]  # Set stock_input to ticker only
 
-# Dropdown for selecting predefined stocks
-selected_stock = st.selectbox(
-    "Select Stock:",
-    [""] + list(stock_symbols.keys()),  # Add an empty option for 'unselected' state
-    index=0 if st.session_state.selected_stock == "" else list(stock_symbols.keys()).index(st.session_state.selected_stock) + 1,
-    on_change=on_select_stock,
-)
+# Dropdown/search field for selecting or entering a stock ticker
+st.write("Select a stock or enter a custom ticker:")
+stock_dropdown = st.selectbox(" ", stock_options, index=0, on_change=on_stock_select, key="stock_dropdown")
 
-# Text input for searching by ticker
-custom_stock = st.text_input("Search stock with Ticker:", value=st.session_state.custom_stock, on_change=on_custom_stock_input)
-
-# Update session state values
-st.session_state.selected_stock = selected_stock
-st.session_state.custom_stock = custom_stock
-
-# Determine the stock symbol to use based on user input
-symbol = st.session_state.custom_stock if st.session_state.custom_stock else st.session_state.selected_stock
-company_name = stock_symbols.get(symbol, "Unknown Company") if not st.session_state.custom_stock else yf.Ticker(symbol).info.get("shortName", "Unknown Company")
+# If a custom ticker was entered, update session state to use it
+if st.session_state.stock_input and st.session_state.stock_input not in stock_symbols:
+    symbol = st.session_state.stock_input  # Use custom ticker entered by user
+    company_name = yf.Ticker(symbol).info.get("shortName", "Unknown Company")
+else:
+    symbol = stock_dropdown.split(" - ")[0] if stock_dropdown else ""
+    company_name = stock_symbols.get(symbol, "Unknown Company")
 
 # Display the selected stock's name and ticker symbol
 if symbol:
