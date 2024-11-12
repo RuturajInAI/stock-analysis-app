@@ -57,14 +57,8 @@ stock_symbols = {
     "TKA.DE": "Thyssenkrupp AG",
     "PUM.DE": "Puma SE",
     "S92.DE": "SMA Solar Technology AG",
-    "WDI.DE": "Wirecard AG",
     "HNR1.DE": "Hannover Rück SE",
-    "MEO.DE": "MEAG Munich Ergo Kapitalanlagegesellschaft mbH",
-    "SAX.DE": "Sachsenmilch AG",
-    "KD8.DE": "Kion Group AG",
-    "BNR.DE": "Bertrandt AG",
-    "G24.DE": "Scout24 AG",
-    # Add more as needed
+    # Additional stocks if needed
 }
 
 # Combine the list of stocks with an empty entry for custom tickers
@@ -82,7 +76,7 @@ def on_stock_select():
 st.write("Select a stock or enter a custom ticker:")
 stock_dropdown = st.selectbox(" ", stock_options, index=0, on_change=on_stock_select, key="stock_dropdown")
 
-# If a custom ticker was entered, update session state to use it
+# Determine the stock symbol to use
 if st.session_state.stock_input and st.session_state.stock_input not in stock_symbols:
     symbol = st.session_state.stock_input  # Use custom ticker entered by user
     company_name = yf.Ticker(symbol).info.get("shortName", "Unknown Company")
@@ -92,7 +86,7 @@ else:
 
 # Display the selected stock's name and ticker symbol
 if symbol:
-    st.write(f"Analyzing stock: {company_name} ({symbol})")
+    st.write(f"**Analyzing stock:** {company_name} ({symbol})")
 
     # Function to fetch stock data for the last 6 months
     def fetch_last_6_months_data(symbol):
@@ -105,9 +99,6 @@ if symbol:
     if stock_data.empty:
         st.write("Data unavailable for this stock.")
     else:
-        st.write("Last 6 Months of Data:")
-        st.dataframe(stock_data)
-
         # Function to analyze the stock and make a trend-based prediction
         def analyze_and_predict(data):
             # Calculate 50-day and 200-day moving averages for trend analysis
@@ -127,19 +118,17 @@ if symbol:
             latest_ma200 = data['MA200'].iloc[-1]
             latest_rsi = data['RSI'].iloc[-1]
 
-            # Simple prediction logic based on trend
+            # Recommendation based on trend and RSI
             if latest_ma50 > latest_ma200 and latest_rsi < 70:
-                prediction = "Uptrend likely to continue - Recommendation: Buy"
+                return "Buy", "green"
             elif latest_ma50 < latest_ma200 and latest_rsi > 30:
-                prediction = "Downtrend likely to continue - Recommendation: Sell"
+                return "Not Buy", "red"
             else:
-                prediction = "Trend is unclear - Hold recommendation"
+                return "Hold", "gray"
 
-            return prediction
-
-        # Show the prediction
-        prediction = analyze_and_predict(stock_data)
-        st.write(f"Prediction: **{prediction}**")
+        # Show the prediction with color-coded text
+        prediction, color = analyze_and_predict(stock_data)
+        st.markdown(f"**Prediction:** <span style='color:{color}'>{prediction}</span>", unsafe_allow_html=True)
 
         # Function to plot the stock data with moving averages
         def plot_stock_data(data, symbol, company_name):
@@ -153,3 +142,7 @@ if symbol:
 
         # Plot the stock data with moving averages
         plot_stock_data(stock_data, symbol, company_name)
+
+        # Display the last 6 months of data in a table
+        st.write("**Last 6 Months of Data:**")
+        st.dataframe(stock_data)
