@@ -1,40 +1,77 @@
-# Stock Analysis App
 
-This project is an interactive **Stock Analysis App** built using Streamlit. The app fetches real-time stock data for the last 10 days, performs basic analysis, and provides a recommendation on whether to "Buy" or "Not Buy" the selected stock. The app also includes an interactive chart displaying the stock's recent performance.
+# Enhanced Stock Analysis and Prediction App
+
+This Streamlit-based application allows users to analyze German stock market data using historical trends and basic technical indicators. The app provides a simple recommendation (Buy, Not Buy, or Hold) based on calculated moving averages and the Relative Strength Index (RSI).
 
 ## Features
 
-- Fetches the last 10 days of stock data for a selected stock.
-- Provides a simple "Buy" or "Not Buy" recommendation based on stock trends.
-- Visualizes the stock's closing prices and 10-day moving average in an interactive chart.
-- Allows the user to select a stock from a predefined list or type a custom stock symbol.
+- **Stock Selection**: Choose from a dropdown list of predefined German stocks or enter any custom stock ticker.
+- **Historical Data Visualization**: Display the stock's closing prices with 50-day and 200-day moving averages over the last 6 months.
+- **Technical Analysis-Based Recommendation**: Get a recommendation based on moving averages and RSI.
+- **User-Friendly Interface**: Built with Streamlit for ease of use and real-time interaction.
 
-## How to Use the App
+## Technical Indicators Used
 
-1. Select a stock from the dropdown menu or type a custom stock symbol.
-2. The app will fetch and display the last 10 days of data for the selected stock.
-3. A recommendation to "Buy" or "Not Buy" the stock will be shown based on recent performance.
-4. An interactive chart visualizing the stock price and 10-day moving average is also provided.
+1. **Moving Averages (MA50 and MA200)**:
+   - The 50-day moving average (MA50) reflects short-term trends.
+   - The 200-day moving average (MA200) reflects longer-term trends.
+   - If MA50 is above MA200, it suggests an uptrend, while MA50 below MA200 suggests a downtrend.
 
-## Technology Stack
+2. **Relative Strength Index (RSI)**:
+   - The RSI is a momentum oscillator that helps identify overbought or oversold conditions.
+   - RSI above 70 suggests overbought conditions (potential for a price drop).
+   - RSI below 30 suggests oversold conditions (potential for a price increase).
 
-- **Python**: The programming language used for the entire project.
-- **Streamlit**: Used to create the interactive web interface.
-- **yfinance**: Fetches the stock data from Yahoo Finance.
-- **pandas**: For data manipulation and calculations.
-- **plotly**: For creating interactive charts.
+## Prediction Logic
 
-## How It Works
+The app uses a rule-based approach for predictions:
 
-1. **Fetch Data**: The app uses `yfinance` to get stock data from Yahoo Finance for the last 10 days.
-2. **Analyze Data**: It calculates a 10-day moving average and Relative Strength Index (RSI) to determine stock performance.
-   - **Buy** if the closing price is above the 10-day moving average and the RSI is low (indicating the stock is oversold).
-   - **Not Buy** otherwise.
-3. **Display Results**: The app shows the stock data, recommendation, and an interactive chart.
+- **Buy**: Recommended when MA50 > MA200 and RSI < 70.
+- **Not Buy**: Recommended when MA50 < MA200 and RSI > 30.
+- **Hold**: Suggested if the trend is unclear or indicators are mixed.
 
-## Setup and Deployment
+## Installation
 
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/yourusername/stock-analysis-app.git
    cd stock-analysis-app
+   ```
+
+2. **Install Dependencies**:
+   Make sure you have Python and pip installed, then run:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run the Application**:
+   ```bash
+   streamlit run stock_analysis_app.py
+   ```
+
+## How to Use
+
+1. **Select a Stock**:
+   - Choose from a list of predefined German stocks in the dropdown menu, or type any valid stock ticker in the text input.
+   
+2. **View Analysis**:
+   - The app will fetch the last 6 months of stock data, display a graph with 50-day and 200-day moving averages, and provide a technical analysis-based recommendation.
+
+3. **Interpret the Prediction**:
+   - The prediction is color-coded for easy interpretation:
+     - **Green**: Buy recommendation
+     - **Red**: Not Buy recommendation
+     - **Gray**: Hold recommendation
+
+## Example Stocks
+
+- Popular German stocks included: SAP (SAP.DE), Deutsche Bank (DBK.DE), Volkswagen (VOW3.DE), and others.
+- You can also analyze custom tickers by typing in a valid stock symbol.
+
+## Project Motivation
+
+This app was developed by **Ruturaj Dilip Gawdae** as part of a learning project in Digital Engineering and Data Science. It serves as a practical application of stock data analysis using basic indicators, providing users with insights into real-time stock trends and technical analysis.
+
+## License
+
+This project is open-source and available under the MIT License.
